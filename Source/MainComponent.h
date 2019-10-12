@@ -15,7 +15,7 @@
     This component lives inside our window, and this is where you should put all
     your controls and content.
 */
-class MainComponent   : public Component
+class MainComponent   : public Component//, public Slider::Listener
 {
 public:
     //==============================================================================
@@ -26,10 +26,13 @@ public:
     void paint (Graphics&) override;
     void resized() override;
 
+    //void sliderValueChanged (Slider*) override;
+    
 private:
-    //==============================================================================
-    // Your private member variables go here...
-
+    Slider frequencySlider;
+    Label frequencyLabel;
+    Slider durationSlider;
+    Label durationLabel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

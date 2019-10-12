@@ -11,7 +11,32 @@
 //==============================================================================
 MainComponent::MainComponent()
 {
-    setSize (600, 400);
+    addAndMakeVisible(frequencySlider);
+    frequencySlider.setRange(50, 5000.0);
+    frequencySlider.setTextValueSuffix(" Hz");
+//    frequencySlider.addListener(this);
+    frequencySlider.onValueChange = [this] { durationSlider.setValue(1.0 / frequencySlider.getValue(), dontSendNotification); };
+    frequencySlider.setValue(500.0);
+    frequencySlider.setTextBoxStyle(Slider::TextBoxLeft, false, 160, frequencySlider.getTextBoxHeight());
+    frequencySlider.setSkewFactorFromMidPoint(500);
+    
+    addAndMakeVisible(frequencyLabel);
+    frequencyLabel.setText("Frequency", dontSendNotification);
+    frequencyLabel.attachToComponent(&frequencySlider, true);
+    
+    addAndMakeVisible(durationSlider);
+    durationSlider.setRange(1.0 / frequencySlider.getMaximum(), 1.0 / frequencySlider.getMinimum());
+    durationSlider.setTextValueSuffix(" s");
+//    durationSlider.addListener(this);
+    durationSlider.onValueChange = [this] { frequencySlider.setValue(1.0 / durationSlider.getValue(), dontSendNotification); };
+    durationSlider.setTextBoxStyle(Slider::TextBoxLeft, false, 160, frequencySlider.getTextBoxHeight());
+    durationSlider.setSkewFactorFromMidPoint(0.002);
+    
+    addAndMakeVisible(durationLabel);
+    durationLabel.setText("Duration", dontSendNotification);
+    durationLabel.attachToComponent(&durationSlider, true);
+    
+    setSize (600, 90);
 }
 
 MainComponent::~MainComponent()
@@ -21,17 +46,20 @@ MainComponent::~MainComponent()
 //==============================================================================
 void MainComponent::paint (Graphics& g)
 {
-    // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll (getLookAndFeel().findColour (ResizableWindow::backgroundColourId));
-
-    g.setFont (Font (16.0f));
-    g.setColour (Colours::white);
-    g.drawText ("Hello World!", getLocalBounds(), Justification::centred, true);
 }
 
 void MainComponent::resized()
 {
-    // This is called when the MainComponent is resized.
-    // If you add any child components, this is where you should
-    // update their positions.
+    auto sliderLeft = 120;
+    frequencySlider.setBounds(sliderLeft, 20, getWidth() - sliderLeft - 10, 20);
+    durationSlider.setBounds(sliderLeft, 50, getWidth() - sliderLeft - 10, 20);
 }
+
+//void MainComponent::sliderValueChanged(Slider* slider)
+//{
+//    if (slider == &frequencySlider)
+//        durationSlider.setValue(1.0 / frequencySlider.getValue(), dontSendNotification);
+//    else if (slider == &durationSlider)
+//        frequencySlider.setValue(1.0 / durationSlider.getValue(), dontSendNotification);
+//}
